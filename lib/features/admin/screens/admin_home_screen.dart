@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+import '../../../core/constants/app_theme.dart';
+
+/// Admin Home Screen — Squad D's home base
+/// TODO (Admin Squad): Build user management list and approval flow
+class AdminHomeScreen extends StatelessWidget {
+  const AdminHomeScreen({super.key});
+
+  Future<void> _signOut(BuildContext context) async {
+    await Supabase.instance.client.auth.signOut();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.bgLight,
+      appBar: AppBar(
+        title: const Text('Admin Panel', style: AppTextStyles.heading2),
+        backgroundColor: AppColors.bgLight,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () => _signOut(context),
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Admin Control Panel', style: AppTextStyles.heading1),
+            const Text('Manage staff, users, and classrooms', style: AppTextStyles.bodyMuted),
+            const SizedBox(height: AppSpacing.xl),
+
+            // Stat cards row
+            Row(
+              children: [
+                _StatCard(label: 'Total Users', value: '—', icon: Icons.people, color: AppColors.primary),
+                const SizedBox(width: AppSpacing.md),
+                _StatCard(label: 'Pending Approval', value: '—', icon: Icons.pending_actions, color: AppColors.warning),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+
+            const Text('Quick Actions', style: AppTextStyles.heading2),
+            const SizedBox(height: AppSpacing.md),
+
+            ListTile(
+              leading: const Icon(Icons.how_to_reg, color: AppColors.primary),
+              title: const Text('Approve Staff Accounts'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {/* TODO: navigate to approval list */},
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+              tileColor: AppColors.white,
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            ListTile(
+              leading: const Icon(Icons.class_, color: AppColors.secondary),
+              title: const Text('Manage Classrooms'),
+              trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {/* TODO: navigate to classroom list */},
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
+              tileColor: AppColors.white,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
+
+  final String label;
+  final String value;
+  final IconData icon;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.md),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          boxShadow: [
+            BoxShadow(
+              color: color.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Icon(icon, color: color),
+            const SizedBox(height: AppSpacing.sm),
+            Text(value, style: AppTextStyles.heading1.copyWith(color: color)),
+            Text(label, style: AppTextStyles.bodyMuted),
+          ],
+        ),
+      ),
+    );
+  }
+}
